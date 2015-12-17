@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <title>Profile</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+      <link rel="stylesheet" type="text/css" href="/stylesheets/uberLogin.css">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+      <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+      <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+      <script src="http://maps.google.com/maps/api/js?v=3.exp&libraries=places"></script>
+      <script src="http://rawgit.com/allenhwkim/angularjs-google-maps/master/build/scripts/ng-map.min.js"></script>
+      
+      <script src="http://documentcloud.github.com/underscore/underscore-min.js"></script>
+      
+      <script type="text/javascript" src="/UberClient/node_modules/angular-file-upload/dist/angular-file-upload.min.js"></script>
+      <script type="text/javascript" src="/angular/driverStatus.js"></script>
+            <script type="text/javascript" src="/angular/driverProfile.js"></script>
+      
+      <style>
+         .pac-container {
+         z-index: 1050;
+         }
+         .navbar-brand {
+         position: absolute;
+         left: 50%;
+         margin-left: -50px !important;  /* 50% of your logo width */
+         display: block;
+         }
+         .nav-navbar{
+         text-align:center;
+         }
+         /*CSS for map info-window-Start*/
+         #map-canvas {
+         margin: 0;
+         padding: 0;
+         height: 600px;
+         max-width: none;
+         }
+         .gm-style-iw {
+         /*width: 350px !important;*/
+         top: 10px !important;
+         left: 0px !important;
+         background-color: #fff;
+         box-shadow: 0 1px 6px rgba(178, 178, 178, 0.6);
+         border: 1px solid rgba(72, 181, 233, 0.6);
+         border-radius: 10px 10px 10px 10px;
+         }
+         #iw-container {
+         margin-bottom: 5px;
+         }
+         #iw-container .iw-title {
+         font-family: 'Open Sans Condensed', sans-serif;
+         font-size: 22px;
+         font-weight: 400;
+         padding: 10px;
+         background-color: #48b5e9;
+         color: white;
+         margin: 0;
+         border-radius: 2px 2px 0 0;
+         }
+         #iw-container .iw-content {
+         font-size: 13px;
+         line-height: 18px;
+         font-weight: 400;
+         margin-right: 1px;
+         padding: 10px 5px 10px 5px;
+         max-height: 200px;
+         overflow-y: auto;
+         overflow-x: hidden;
+         }
+         .iw-content img {
+         float: right;
+         margin: 0 5px 5px 10px; 
+         }
+         .iw-subTitle {
+         font-size: 16px;
+         font-weight: 400;
+         padding: 5px 0;
+         }
+         .iw-bottom-gradient {
+         position: absolute;
+         width: 410px;
+         height: 25px;
+         bottom: 10px;
+         right: 18px;
+         background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+         background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+         background: -moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+         background: -ms-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+         }
+         /*CSS for map info-window-End*/   
+         /*CSS For rating-start*/
+      div.stars {
+        width: 270px;
+        display: inline-block;
+      }
+
+      input.star { display: none; }
+
+      label.star {
+        float: right;
+        padding: 10px;
+        font-size: 30px;
+        color: #444;
+        transition: all .2s;
+      }
+
+      input.star:checked ~ label.star:before {
+        content: '\f005';
+        color: #FD4;
+        transition: all .25s;
+      }
+
+      input.star-5:checked ~ label.star:before {
+        color: #FE7;
+        text-shadow: 0 0 20px #952;
+      }
+
+      input.star-1:checked ~ label.star:before { color: #F62; }
+
+      label.star:hover { transform: rotate(-15deg) scale(1.3); }
+
+      label.star:before {
+        content: '\f006';
+        font-family: FontAwesome;
+      }
+      /*CSS For rating-end*/
+
+
+      </style>
+   </head>
+   <body ng-app="uber">
+      <nav class="navbar navbar-inverse" style="min-height: 80px;">
+         <div class="container-fluid">
+            <div class="navbar-header">
+               <a class="navbar-brand" href="#">
+                  <h1>U B E R</h1>
+               </a>
+            </div>
+            <div>
+               <ul class="nav navbar-nav navbar-right">
+                  <li>
+                     <a href="/logout">
+                        <h3><span class="glyphicon glyphicon-log-out"></span>Logout</h3>
+                     </a>
+                  </li>
+               </ul>
+            </div>
+         </div>
+      </nav>
+      <div class="" ng-controller="driverController">
+       <div ng-include="'driverSidebar.ejs'"></div>
+            
+         <div class="col-md-10">
+            <div class="driver_xyz">
+               <div class="driver_container">
+                  <form class="edit_about_form" >
+                     <div class="form-group">
+                        <input type="first_name" class="text-input" id="first_name" placeholder="Please enter your first name" name="firstname" data-ng-model="firstname">
+                     </div>
+                     <div class="form-group">
+                        <input type="last_name" class="text-input" id="last_name" placeholder="Please enter your last name" data-ng-model="lastname" name="lastname">
+                     </div>
+                     <hr class="partition">
+                     <span class="aboutHeader">Address</span><br>
+                     <div class="form-group">
+                        <input type="Address" class="text-input" id="Address" placeholder="Please enter your address" data-ng-model="address" name="address">
+                     </div>
+                     <div class="form-group">
+                        <input type="City" class="text-input" id="City" placeholder="Please enter your city" data-ng-model="city" name="city">
+                     </div>
+                     <div class="form-group">
+                        <input type="State" class="text-input" id="State" placeholder="Please enter your state" data-ng-model="state" name="state">
+                     </div>
+                     <div class="form-group">
+                        <input type="Zipcode" class="text-input" id="Zipcode" placeholder="Please enter your zipcode" data-ng-model="zipcode" name="zipcode">
+                     </div>
+                     <hr class="partition">
+                     <span class="aboutHeader">Contact Info:</span><br>
+                     <div class="form-group">
+                        <input type="phone" class="text-input" id="phone" placeholder="Please enter your phone number" data-ng-model="phone" name="phone">
+                     </div>
+                     <hr class="partition">
+                     <span class="aboutHeader">Car Info</span>
+                     <div class="form-group">
+                        <input type="Credit_Card_Number" class="text-input" id="Credit_Card_Number" placeholder="Please enter your car number" data-ng-model="carNumber" name="carNumber">
+                     </div>
+                     <div class="form-group">
+                        <input type="cvv" class="text-input" id="cvv" placeholder="Please enter your car model" data-ng-model="carModel" name="carModel">
+                     </div>
+                     <span class="aboutHeader">SSN Details</span>
+                     <div class="form-group">
+                        <input type="expiration_date" class="text-input" id="expiration_date" placeholder="Please enter your SSN number" data-ng-model="ssnNumber" name="ssnNumber">
+                     </div>
+                     <br>
+                     <span class="aboutHeader">Upload Profile Picture</span>
+                     <div class="form-group">
+                      <input type="file" ng-file-select="onUploadSelect($files)" ng-model="newResource.newUpload" name="driverImage" accept="image/*">
+                     </div>
+                     <br>
+                     <span class="aboutHeader">Introduction Video Link</span>
+                     <div class="form-group">
+                        <input type="expiration_date" class="text-input" id="introVideo" placeholder="Please enter your video link" data-ng-model="introVideo" name="introVideo">
+                     </div>                     
+                     <br>
+                     <button type="submit" class="btn btn--huge" ng-click="updateDriverProfile()">Submit</button>
+                  </form>
+               </div>
+
+                 <div class="modal fade" id="ratingModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header" style="background-color:#3B5998; color: white;">
+                      <h4 class="modal-title" id="myModalLabel">Rate your user</h4>
+                  </div>                  
+                  <div class="modal-body">
+                    <div class="form-group" style="margin-bottom:10px">
+                       <!--  <label class="control-label">Add Destination:</label> -->
+                        <form action="/rateUser" method="POST">
+                          <input class="star star-5" id="star-5" type="radio" name="star" value="5"/>
+                          <label class="star star-5" for="star-5"></label>
+                          <input class="star star-4" id="star-4" type="radio" name="star" value="4"/>
+                          <label class="star star-4" for="star-4"></label>
+                          <input class="star star-3" id="star-3" type="radio" name="star" value="3"/>
+                          <label class="star star-3" for="star-3"></label>
+                          <input class="star star-2" id="star-2" type="radio" name="star" value="2"/>
+                          <label class="star star-2" for="star-2"></label>
+                          <input class="star star-1" selected id="star-1" type="radio" name="star" value="1"/>
+                          <label class="star star-1" for="star-1"></label>
+                          <input type="hidden" id="rideId" name="rideId" data-ng-model="rideId">
+                          <input type="hidden" id="userId" name="userId" data-ng-model="userId">
+                        
+                  </div>
+                  <div class="modal-footer">
+                    <button type="submit" class="btn btn-sm btn-default pull-right" style="background-color:#3B5998; border: 1; color: white; margin-right:10px" >Submit</button>                    
+                  </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+
+            </div>
+         </div>
+      </div>
+   </body>
+</html>

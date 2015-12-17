@@ -1,0 +1,15 @@
+<div class="col-md-2" style="padding:0px;">
+      <ul class="nav nav-pills nav-stacked" style="width:100%;">
+        <li ng-class="{active:isHomepage}"><a href="/userHomepage"><h4><span class="glyphicon glyphicon-user"></span>   HOME</h4></a></li>
+        <li ng-class="{active:isProfile}"><a href="/userProfile"><h4><span class="glyphicon glyphicon-user"></span>		PROFILE</h4></a></li>        
+        <li ng-class="{active: isHistory }"><a href="/userHistory"><h4><span class="glyphicon glyphicon-repeat"></span>	HISTORY</h4></a></li>         
+        <li><a href="/getHelp"><h4><span class="glyphicon glyphicon-cog"></span>		HELP</h4></a></li>
+        <li><a href="/getPromotion"><h4><span class="glyphicon glyphicon-off"></span>		PROMOTION</h4></a></li>
+        <li><form method="post" action="/deleteUser" onsubmit="confirm("Do you want to proceed with deleting account?")">
+              <button type="submit" style="width:100%; background:white; border:0px; color:#337ab7">
+                <h4><span class="icon-trash"></span>   DELETE ACCOUNT</h4>
+              </button>
+              </form>
+        </li>
+      </ul>
+    </div>

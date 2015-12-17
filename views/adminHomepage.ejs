@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Case</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script src="http://maps.google.com/maps/api/js?libraries=places"></script>
+  <script src="http://rawgit.com/allenhwkim/angularjs-google-maps/master/build/scripts/ng-map.min.js"></script>
+  <script type="text/javascript" src="/angular/admin.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+ 
+ <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="stylesheet" type="text/css"/> 
+ <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script> 
+
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script> 
+<script> $(document).ready(function() { 
+
+$("#datepicker").datepicker(); }); </script>
+<style>
+.pac-container {
+  z-index: 1050;
+}
+.navbar-brand {
+    position: absolute;
+    left: 50%;
+    margin-left: -50px !important;  /* 50% of your logo width */
+    display: block;
+}
+
+.nav-navbar{
+    text-align:center;
+}
+
+/*CSS for map info-window-Start*/
+    #map-canvas {
+        margin: 0;
+        padding: 0;
+        height: 600px;
+        max-width: none;
+    }
+    .gm-style-iw {
+        /*width: 350px !important;*/
+        top: 10px !important;
+        left: 0px !important;
+        background-color: #fff;
+        box-shadow: 0 1px 6px rgba(178, 178, 178, 0.6);
+        border: 1px solid rgba(72, 181, 233, 0.6);
+        border-radius: 10px 10px 10px 10px;
+    }
+    #iw-container {
+        margin-bottom: 5px;
+    }
+    #iw-container .iw-title {
+        font-family: 'Open Sans Condensed', sans-serif;
+        font-size: 22px;
+        font-weight: 400;
+        padding: 10px;
+        background-color: #48b5e9;
+        color: white;
+        margin: 0;
+        border-radius: 2px 2px 0 0;
+    }
+    #iw-container .iw-content {
+        font-size: 13px;
+        line-height: 18px;
+        font-weight: 400;
+        margin-right: 1px;
+        padding: 10px 5px 10px 5px;
+        max-height: 200px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+    .iw-content img {
+        float: right;
+        margin: 0 5px 5px 10px; 
+    }
+    .iw-subTitle {
+        font-size: 16px;
+        font-weight: 400;
+        padding: 5px 0;
+    }
+    .iw-bottom-gradient {
+        position: absolute;
+        width: 410px;
+        height: 25px;
+        bottom: 10px;
+        right: 18px;
+        background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba
+
+(255,255,255,1) 100%);
+        background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%, rgba
+
+(255,255,255,1) 100%);
+        background: -moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba
+
+(255,255,255,1) 100%);
+        background: -ms-linear-gradient(top, rgba(255,255,255,0) 0%, rgba
+
+(255,255,255,1) 100%);
+    }
+ /*CSS for map info-window-End*/   
+ .modal-header {
+      background-color: #333;
+      color: #fff !important;
+      text-align: center;
+      font-size: 30px;
+  }
+  .modal-header, .modal-body {
+      padding: 20px 20px;
+  }
+</style>
+</head>
+
+<body ng-app="adminHomepageApp">
+
+<nav class="navbar navbar-inverse" style="height: 80px;">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#"><h4>U B E R</h4></a>
+    </div>
+    <div>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="/logout"><h4><span class="glyphicon glyphicon-log-out"></span>Logout</h4></a></li>
+      </ul>
+    </div>
+  </div>
+</nav>  
+  <div class="">
+<div class="col-md-2" style="padding:0px;">
+      <ul class="nav nav-pills nav-stacked" style="width:100%;">
+        <li class="active"><a href="/adminHomepage"><h4><span class="glyphicon glyphicon-home"></span>   HOME</h4></a></li>
+        <li><a href="/getProfiles"><h4><span class="glyphicon glyphicon-user"></span>VIEW PROFILES</h4></a></li>
+        <li><a href="/adminHomepage"><h4><span class="glyphicon glyphicon-road"></span>RIDE STATISTICS</h4></a></li>
+        <li><a href="/showGraphs"><h4><span class="glyphicon glyphicon-stats"> </span>	GRAPHS</h4></a></li>
+        <li><a href="/adminViewBill"><h4><span class="glyphicon glyphicon-search"></span>	SEARCH BILLS</h4></a></li>
+      </ul>
+    </div>   
+      </div>
+
+
+ <div ng-controller="adminCtr">
+ <div class="col-md-3" style="padding:10px; margin-left: 20%;" >
+     <button type="button" class="btn btn-primary btn-lg btn-block" style="width:370px;" data-toggle="modal" data-target="#myModal">Check revenues</button>
+
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content" style="height:350px; width:370px;">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Select a date to view revenue:</h4>
+        </div>
+        <div class="modal-body" >
+        
+     
+           <p>Date: "yyyy-mm-dd"  <input type="text" ng-model="date"/></p>
+          <button type="submit" class="btn btn-block" ng-click="getRevenue()">Search</button>
+          
+           <div ng-if="price != null">
+          
+          <br><br> Revenue : {{ price}} $<br>
+          
+          </div>
+          <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">Close</button>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  
+      <br>
+    <br>
+    <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" style="width:370px;" data-target="#myModal1">Check total ride</button>
+
+   <!-- Modal -->
+  <div class="modal fade" id="myModal1" role="dialog">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-content" style="height:350px; width:370px;">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Select a date</h4>
+        </div>
+        <div class="modal-body" >
+          <p><form role="form">
+          
+           <br><br><br> <p>Date: "yyyy-mm-dd"  <input type="text" ng-model="date"/></p>
+          <button type="submit" class="btn btn-block" ng-click="getRidesByDate()">Search</button>
+          </form></p>
+           <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal" >Close</button>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+        </div>
+        <div class="col-md-10" style="padding:10px; margin-left: 20%;" >
+        
+      <div>  
+        
+        <map center="current-position" zoom="10" ng-model="map" style="height:100%">   </map>
+        </div>
+         </div>
+  </div>
+       
+  </div>
+  
+
+</body>
+</html>

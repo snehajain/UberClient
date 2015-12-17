@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Bootstrap Case</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+  <script src="http://maps.google.com/maps/api/js?libraries=places"></script>
+  <script src="http://rawgit.com/allenhwkim/angularjs-google-maps/master/build/scripts/ng-map.min.js"></script>
+  <script type="text/javascript" src="/angular/userHomepage.js"></script>
+<style>
+.pac-container {
+  z-index: 1050;
+}
+.navbar-brand {
+    position: absolute;
+    left: 50%;
+    margin-left: -50px !important;  /* 50% of your logo width */
+    display: block;
+}
+
+.nav-navbar{
+    text-align:center;
+}
+
+/*Static Stars-Start*/
+  
+  
+  span.stars, span.stars span {
+      display: block;
+      background: url(stars.png) 0 -16px repeat-x;
+      width: 80px;
+      height: 16px;
+  }
+  
+  span.stars span {
+      background-position: 0 0;
+  }
+  .rating {
+        overflow: hidden;
+        display: inline-block;
+    }
+    .rating-input {
+        float: right;
+        width: 16px;
+        height: 16px;
+        padding: 0;
+        margin: 0 0 0 -16px;
+        opacity: 0;
+      background: url('stars.png') 0 -16px;
+    }
+  .rating:hover .rating-star:hover,
+  .rating:hover .rating-star:hover ~ .rating-star,
+  .rating-input:checked ~ .rating-star {
+        background-position: 0 0;
+    }
+    .rating-star,
+    .rating:hover .rating-star {
+        position: relative;
+        float: right;
+        display: block;
+        width: 16px;
+        height: 16px;
+        background: url('stars.png') 0 -16px;
+    }
+  /*Static Stars-End*/
+  
+
+/*CSS for map info-window-Start*/
+    #map-canvas {
+        margin: 0;
+        padding: 0;
+        height: 600px;
+        max-width: none;
+    }
+    .gm-style-iw {
+        /*width: 350px !important;*/
+        top: 10px !important;
+        left: 0px !important;
+        background-color: #fff;
+        box-shadow: 0 1px 6px rgba(178, 178, 178, 0.6);
+        border: 1px solid rgba(72, 181, 233, 0.6);
+        border-radius: 10px 10px 10px 10px;
+    }
+    #iw-container {
+        margin-bottom: 5px;
+    }
+    #iw-container .iw-title {
+        font-family: 'Open Sans Condensed', sans-serif;
+        font-size: 22px;
+        font-weight: 400;
+        padding: 10px;
+        background-color: #48b5e9;
+        color: white;
+        margin: 0;
+        border-radius: 2px 2px 0 0;
+    }
+    #iw-container .iw-content {
+        font-size: 13px;
+        line-height: 18px;
+        font-weight: 400;
+        margin-right: 1px;
+        padding: 10px 5px 10px 5px;
+        max-height: 200px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+    .iw-content img {
+        float: right;
+        margin: 0 5px 5px 10px; 
+    }
+    .iw-subTitle {
+        font-size: 16px;
+        font-weight: 400;
+        padding: 5px 0;
+    }
+    .iw-bottom-gradient {
+        position: absolute;
+        width: 410px;
+        height: 25px;
+        bottom: 10px;
+        right: 18px;
+        background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+        background: -webkit-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+        background: -moz-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+        background: -ms-linear-gradient(top, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%);
+    }
+ /*CSS for map info-window-End*/   
+</style>
+</head>
+
+<body ng-app="userHomepageApp">
+<!-- <nav class="navbar navbar-inverse" style="height: 20px;">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="#"><h4>U B E R</h4></a>
+    </div>
+    <div>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="/logout"><h4><span class="glyphicon glyphicon-log-out"></span>Logout</h4></a></li>
+      </ul>
+    </div>
+  </div>
+</nav>   -->
+<nav class="navbar navbar-inverse" style="height: 20px;">
+  <div ng-include src="'header.html'"></div>   
+</nav>   
+  <div class="" ng-controller="userHomepageCtrl" id="userHomepageCtrlId" ng-init="rideRequested=false; isHomepage=true">
+    <div ng-include src="'sidebar.ejs'"></div>   
+    <div class="col-md-10" >
+      <div  id="map-canvas">
+        <div ng-hide="!rideRequested">
+            <button ng-click="requestRide()" >Change Destination</button>
+            <button ng-click="resetRide()" >Cancel Ride</button>
+        </div>
+        <map center="current-position" zoom="10" ng-model="map"  style="height:100%">                            
+          <marker position="current-position" icon="/images/currentLocation.png" title="You are here"></marker>
+           <marker id="reqRideMarker" position="current-position" title="Request Ride" on-click="requestRide()" data-toggle="modal" data-target="#addLifeEventModal"></marker>  
+          <marker ng-repeat="driver in driverDisplayData" name="{{driver}}" icon="/images/caricon.png"
+            position="{{driver.lat}}, {{driver.lng}}" title="{{driver.firstname}}" on-click="showDriverData()"></marker>
+          <marker ng-repeat="car in carCoordinates" icon="/images/caricon.png" position="{{car.lat}}, {{car.lng}}" ></marker>
+        </map>
+
+            <div class="modal fade" id="addLifeEventModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header" style="background-color:#3B5998; color: white;">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color:white"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Request Ride</h4>
+                  </div>
+                  <form  class="form-group" >
+                  <div class="modal-body">
+                    <div class="form-group">
+                        <label class="control-label">Add Destination:</label>
+                        <input id="destinationAddress" type="text" ng-model="destinationAddress" style="width:100%"></input>
+                    </div>
+                      <div class="form-group">Full address:</label>
+                        <textarea class="form-control" disabled ng-model="correctDestinationAddress.formatted_address" style="resize: none;"></textarea>
+                      </div>
+                  </div>
+                  <div class="modal-footer">
+                    <input type="button" class="btn btn-sm btn-default pull-right" data-dismiss="modal" value="Cancel" >
+                    <button type="button" class="btn btn-sm btn-default pull-right" style="background-color:#3B5998; border: 1; color: white; margin-right:10px" value="Save Event" ng-click="addDestination()">Confirm Ride</button>
+                  </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+      </div>
+    </div>
+</div>
+
+</body>
+</html>
